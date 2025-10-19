@@ -1,3 +1,3 @@
-module at_commands
+module github.com/maximerobine/at_commands
 
 go 1.25.3
