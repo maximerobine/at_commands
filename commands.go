@@ -15,44 +15,33 @@ const (
 	Clock
 )
 
-type CommandInfo struct {
-	BaseCmd string
-	Modes   CommandMode
-}
-
-var atCommands = map[ATCommand]CommandInfo{
-	ManufacturerIdentification:        {BaseCmd: "AT+CGMI", Modes: ModeExecute},
-	ModelIdentification:               {BaseCmd: "AT+CGMM", Modes: ModeExecute},
-	RevisionIdentification:            {BaseCmd: "AT+CGMR", Modes: ModeExecute},
-	ProductSerialNumberIdentification: {BaseCmd: "AT+CGSN", Modes: ModeExecute},
-	// Clock docstring ?
-	Clock: {
-		BaseCmd: "AT+CCLK",
-		Modes:   ModeRead | ModeTest | ModeWrite,
-	},
+var atCommands = map[ATCommand]string{
+	ManufacturerIdentification:        "AT+CGMI",
+	ModelIdentification:               "AT+CGMM",
+	RevisionIdentification:            "AT+CGMR",
+	ProductSerialNumberIdentification: "AT+CGSN",
+	Clock:                             "AT+CCLK",
 }
 
 func (at ATCommand) String() string {
-	return atCommands[at].BaseCmd
+	return atCommands[at]
 }
 
-func (c CommandInfo) Build(mode CommandMode, args ...string) (string, error) {
-	if c.Modes&mode == 0 {
-		return "", fmt.Errorf("%s does not support mode %v", c.BaseCmd, mode)
+func (at ATCommand) Read() string {
+	return at.String() + "?"
+}
+
+func (at ATCommand) Execute() string {
+	return at.String()
+}
+
+func (at ATCommand) Test() string {
+	return at.String() + "=?"
+}
+
+func (at ATCommand) Write(args ...string) string {
+	if len(args) == 0 {
+		return at.String() + "="
 	}
-	switch mode {
-	case ModeExecute:
-		return c.BaseCmd, nil
-	case ModeRead:
-		return c.BaseCmd + "?", nil
-	case ModeTest:
-		return c.BaseCmd + "=?", nil
-	case ModeWrite:
-		if len(args) == 0 {
-			return "", fmt.Errorf("write mode requires args")
-		}
-		return c.BaseCmd + "=" + strings.Join(args, ","), nil
-	default:
-		return "", fmt.Errorf("unknown mode")
-	}
+	return fmt.Sprintf("%s=%s", at.String(), strings.Join(args, ","))
 }
