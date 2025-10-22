@@ -13,6 +13,18 @@ const (
 	RevisionIdentification
 	ProductSerialNumberIdentification
 	Clock
+	CharacterSet
+	PIN
+	SubscriberNumber
+	SignalQuality
+	Operator
+	NetworkRegistration
+	PreferredOperatorList
+	ReadOperatorNames
+	ErrorVerbosity
+	MessageFormat
+	ListMessage
+	SendMessage
 )
 
 var atCommands = map[ATCommand]string{
@@ -21,6 +33,18 @@ var atCommands = map[ATCommand]string{
 	RevisionIdentification:            "AT+CGMR",
 	ProductSerialNumberIdentification: "AT+CGSN",
 	Clock:                             "AT+CCLK",
+	CharacterSet:                      "AT+CSCS",
+	PIN:                               "AT+CPIN",
+	SubscriberNumber:                  "AT+CNUM",
+	SignalQuality:                     "AT+CSQ",
+	Operator:                          "AT+COPS",
+	NetworkRegistration:               "AT+CREG",
+	PreferredOperatorList:             "AT+CPOL",
+	ReadOperatorNames:                 "AT+COPN",
+	ErrorVerbosity:                    "AT+CMEE",
+	MessageFormat:                     "AT+CMGF",
+	ListMessage:                       "AT+CMGL",
+	SendMessage:                       "AT+CMGS",
 }
 
 func (at ATCommand) String() string {
